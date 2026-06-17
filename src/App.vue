@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 import CartSummary from '@/components/CartSummary.vue'
-import pToggleSwitch from 'primevue/toggleswitch'
+import MenuBar from '@/components/MenuBar.vue'
 
 import { Product } from '@/models/product.model'
 import { Category } from '@/models/category.model'
@@ -12,7 +12,7 @@ export default defineComponent({
   components: {
     ProductCard,
     CartSummary,
-    pToggleSwitch,
+    MenuBar,
   },
   data() {
     return {
@@ -70,13 +70,6 @@ export default defineComponent({
       return this.cart.getFinalPrice()
     },
   },
-  mounted() {
-    const savedTheme = localStorage.getItem('theme')
-
-    this.checked = savedTheme === 'dark'
-
-    document.documentElement.classList.toggle('dark', this.checked)
-  },
   methods: {
     addToCart(product: Product) {
       this.cart.addItem(product, 1)
@@ -87,34 +80,13 @@ export default defineComponent({
     removeItemFromCart(productId: number) {
       this.cart.removeItemCompletely(productId)
     },
-    toggleDarkMode() {
-      document.documentElement.classList.toggle('dark', this.checked)
-
-      localStorage.setItem('theme', this.checked ? 'dark' : 'light')
-    },
   },
 })
 </script>
 
 <template>
   <div className="font-mono bg-neutral-200 dark:bg-neutral-900">
-    <header className="bg-neutral-100 dark:bg-neutral-950 px-4 py-8 text-center">
-      <h1 className="text-3xl font-extrabold text-teal-500">E-Commerce do Atleta 💪</h1>
-      <p className="text-base italic text-neutral-600 dark:text-neutral-300">
-        O lugar certo para quem busca alta performance!
-      </p>
-
-      <!-- Botão de Alterar Tema com PrimeVue usando classes do TailwindCSS -->
-      <pToggleSwitch
-        v-model="checked"
-        :pt="{ root: { class: 'scale-125 my-2' } }"
-        @change="toggleDarkMode"
-      >
-        <template #handle="{ checked }">
-          <i :class="['text-xs! pi', { 'pi-moon': checked, 'pi-sun': !checked }]" />
-        </template>
-      </pToggleSwitch>
-    </header>
+    <MenuBar />
 
     <main className="container mx-auto p-6 md:p-12">
       <section>
