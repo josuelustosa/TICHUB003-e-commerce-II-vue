@@ -19,9 +19,9 @@ export default defineComponent({
       logo,
       checked: false,
       items: [
-        { label: 'Catálogo', icon: 'pi pi-shop' },
-        { label: 'Carrinho', icon: 'pi pi-shopping-cart' },
-        { label: 'FAQ', icon: 'pi pi-question-circle' },
+        { label: 'Catálogo', icon: 'pi pi-shop', route: '/' },
+        { label: 'Carrinho', icon: 'pi pi-shopping-cart', route: '/cart',  badge: false},
+        { label: 'FAQ', icon: 'pi pi-question-circle', route: 'faq' },
       ],
     }
   },
@@ -72,10 +72,18 @@ export default defineComponent({
     </template>
 
     <template #item="{ item, props }">
-      <a v-ripple v-bind="props.action" class="flex items-center gap-2 px-3 py-2">
-        <i :class="item.icon" />
-        <span>{{ item.label }}</span>
-      </a>
+      <RouterLink v-slot="{ href, navigate }" :to="item.route" custom>
+        <a
+          :href="href"
+          v-bind="props.action"
+          @click="navigate"
+          class="flex items-center gap-2 px-3 py-2"
+        >
+          <i :class="item.icon" />
+
+          <span>{{ item.label }}</span>
+        </a>
+      </RouterLink>
     </template>
 
     <template #end>
