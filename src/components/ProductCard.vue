@@ -2,13 +2,16 @@
 import { defineComponent, PropType } from 'vue'
 import type { Product } from '@/models/product.model'
 
-import pButton from 'primevue/button'
+import BaseButton from '@/components/base/BaseButton.vue'
 import pCard from 'primevue/card'
+
+import { RouterLink } from 'vue-router'
 
 export default defineComponent({
   components: {
-    pButton,
+    BaseButton,
     pCard,
+    RouterLink,
   },
   props: {
     product: {
@@ -29,10 +32,14 @@ export default defineComponent({
     className="w-full bg-neutral-100 dark:bg-neutral-950 shadow-xl/40 shadow-neutral-500 dark:shadow-neutral-950 rounded-xl"
   >
     <template #title>
-      <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+      <RouterLink
+        :to="{ name: 'product-details', params: { id: product.id } }"
+        className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 hover:text-teal-500 dark:hover:text-teal-400 transition-colors duration-200 cursor-pointer"
+      >
         {{ product.name }}
-      </h3>
+      </RouterLink>
     </template>
+
     <template #subtitle>
       <span className="text-xs text-neutral-500 uppercase">
         {{ product.category.title }}
@@ -45,12 +52,7 @@ export default defineComponent({
       <p className="text-base font-bold py-3 text-teal-500">R$ {{ product.price.toFixed(2) }}</p>
     </template>
     <template #footer>
-      <pButton
-        :pt="{ root: { class: 'w-full' } }"
-        @click="handleAddToCart"
-        label="Adicionar"
-        severity="primary"
-      />
+      <BaseButton icon="pi pi-shopping-cart" label="Adicionar" @click="handleAddToCart" />
     </template>
   </pCard>
 </template>
