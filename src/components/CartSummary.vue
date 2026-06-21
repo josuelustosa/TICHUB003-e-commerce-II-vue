@@ -6,6 +6,7 @@ import pDataView from 'primevue/dataview'
 import pButton from 'primevue/button'
 import pConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
+import BaseButton from '@/components/base/BaseButton.vue'
 
 import type { CartItem } from '@/models/cart.model'
 
@@ -14,6 +15,7 @@ export default defineComponent({
     pCard,
     pDataView,
     pButton,
+    BaseButton,
     pConfirmDialog,
   },
 
@@ -93,6 +95,10 @@ export default defineComponent({
             </div>
           </template>
         </pCard>
+
+        <RouterLink :to="{ name: 'checkout' }" class="block mt-6">
+          <BaseButton class="w-full" icon="pi pi-check-circle" label="Realizar Pagamento" />
+        </RouterLink>
       </aside>
 
       <!-- Lista de Itens com pDataView à direita -->
