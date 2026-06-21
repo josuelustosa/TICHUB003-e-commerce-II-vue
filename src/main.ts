@@ -18,6 +18,7 @@ import Menubar from 'primevue/menubar'
 import Avatar from 'primevue/avatar'
 import Badge from 'primevue/badge'
 import OverlayBadge from 'primevue/overlaybadge'
+import Menu from 'primevue/menu';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -66,5 +67,6 @@ app.component('pMenubar', Menubar)
 app.component('pAvatar', Avatar)
 app.component('pBadge', Badge)
 app.component('pOverlayBadge', OverlayBadge)
+app.component('pMenu', Menu)
 
 app.mount('#app')
