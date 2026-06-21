@@ -14,8 +14,10 @@ import DataView from 'primevue/dataview'
 import ConfirmDialog from 'primevue/confirmdialog'
 import ConfirmationService from 'primevue/confirmationservice'
 import ToggleSwitch from 'primevue/toggleswitch'
-import Menubar from 'primevue/menubar';
+import Menubar from 'primevue/menubar'
 import Avatar from 'primevue/avatar'
+import Badge from 'primevue/badge'
+import OverlayBadge from 'primevue/overlaybadge'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -62,5 +64,7 @@ app.use(ConfirmationService)
 app.component('pToggleSwitch', ToggleSwitch)
 app.component('pMenubar', Menubar)
 app.component('pAvatar', Avatar)
+app.component('pBadge', Badge)
+app.component('pOverlayBadge', OverlayBadge)
 
 app.mount('#app')
