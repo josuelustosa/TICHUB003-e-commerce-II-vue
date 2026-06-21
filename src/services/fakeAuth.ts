@@ -21,7 +21,7 @@ const users = {
 // users.admin    -> Administrador
 // null           -> Visitante (não autenticado)
 
-let currentUser: User | null = users.consumer
+let currentUser: User | null = users.admin
 
 export const fakeAuth = {
   getUser(): User | null {

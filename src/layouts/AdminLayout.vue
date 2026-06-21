@@ -4,6 +4,7 @@ import { defineComponent } from 'vue'
 import pMenu from 'primevue/menu'
 import pBadge from 'primevue/badge'
 import pAvatar from 'primevue/avatar'
+import pBreadcrumb from 'primevue/breadcrumb'
 
 import logo from '@/assets/favicon-ecommerce.png'
 import profile from '@/assets/profile.png'
@@ -13,11 +14,13 @@ export default defineComponent({
     pMenu,
     pBadge,
     pAvatar,
+    pBreadcrumb,
   },
   data() {
     return {
       logo,
       profile,
+
       items: [
         {
           separator: true,
@@ -65,7 +68,23 @@ export default defineComponent({
           separator: true,
         },
       ],
+
+      home: {
+        icon: 'pi pi-home',
+        route: '/admin',
+      },
+
+      breadcrumbItems: {
+        '/admin': [{ label: 'Dashboard' }],
+        '/admin/products': [{ label: 'Produtos' }],
+        '/admin/orders': [{ label: 'Pedidos' }],
+      },
     }
+  },
+  computed: {
+    breadcrumbs() {
+      return this.breadcrumbItems[this.$route.path] ?? []
+    },
   },
 })
 </script>
@@ -109,6 +128,7 @@ export default defineComponent({
 
     <!-- Main -->
     <main class="flex-1 p-6">
+      <pBreadcrumb :home="home" :model="breadcrumbs" class="mb-6" />
       <RouterView />
     </main>
   </div>
