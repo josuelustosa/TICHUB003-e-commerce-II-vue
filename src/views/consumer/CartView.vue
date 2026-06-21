@@ -4,9 +4,14 @@ import CartSummary from '@/components/CartSummary.vue'
 
 import { Product } from '@/models/product.model'
 
+import { cart } from '@/data/cart'
+
 export default defineComponent({
   components: {
     CartSummary,
+  },
+  data() {
+    return { cart }
   },
   computed: {
     totalItems(): number {
@@ -31,18 +36,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- <CartSummary
+  <h2 className="text-2xl font-bold">Página de Carrinho</h2>
+
+  <CartSummary
     :cart-items="cart.cartItem"
     :total-items="totalItems"
     :final-price="finalPrice"
     @increment="addToCart"
     @decrement="removeFromCart"
     @remove="removeItemFromCart"
-  /> -->
-
-  <h2 className="text-2xl font-bold">Página de Carrinho</h2>
-
-  <p className="mt-4">Página de Carrinho em construção.</p>
+  />
 </template>
 
 <style scoped></style>

@@ -30,7 +30,7 @@ export default defineComponent({
       if (!this.product) return
 
       // TODO:
-      // Integrar com o serviço/store do carrinho
+      // Integrar com o cartStore (Pinia) na Atividade 5
       console.log('Adicionar ao carrinho:', this.product)
     },
   },

@@ -4,9 +4,9 @@ import { defineComponent } from 'vue'
 import ProductCard from '@/components/ProductCard.vue'
 
 import { Product } from '@/models/product.model'
-import { Cart } from '@/models/cart.model'
 
 import { products } from '@/data/products'
+import { cart } from '@/data/cart'
 
 export default defineComponent({
   components: {
@@ -16,7 +16,7 @@ export default defineComponent({
   data() {
     return {
       products,
-      cart: new Cart(),
+      cart,
     }
   },
 
