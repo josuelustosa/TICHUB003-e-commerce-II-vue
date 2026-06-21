@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { registerGuards } from './guards'
+
 // CONSUMER
 import ConsumerLayout from '@/layouts/ConsumerLayout.vue'
 import HomeView from '@/views/consumer/HomeView.vue'
@@ -46,6 +48,10 @@ const router = createRouter({
           path: 'checkout',
           name: 'checkout',
           component: CheckoutView,
+
+          meta: {
+            requiresAuth: true,
+          },
         },
 
         {
@@ -59,6 +65,11 @@ const router = createRouter({
     {
       path: '/admin',
       component: AdminLayout,
+
+      meta: {
+        requiresAuth: true,
+        roles: ['ADMIN'],
+      },
 
       children: [
         {
@@ -80,5 +91,7 @@ const router = createRouter({
     },
   ],
 })
+
+registerGuards(router)
 
 export default router
