@@ -10,11 +10,11 @@ A Residência em TIC 12 é um programa de capacitação profissional e tecnológ
 
 ## 📂 Organização das Atividades
 
-| Atividade                                                | Branch         |
-| -------------------------------------------------------- | -------------- |
-| Atividade 2: VueJS - E-commerce com Vue.js & Options API | `atv-2/vue-js` |
-| Atividade 3: PrimeVue e Tailwind CSS | `atv-3/primevue-e-tailwind` |
-| - | - |
+| Atividade                                                  | Branch                      |
+| ---------------------------------------------------------- | --------------------------- |
+| Atividade 2: VueJS - E-commerce com Vue.js & Options API   | `atv-2/vue-js`              |
+| Atividade 3: PrimeVue e Tailwind CSS                       | `atv-3/primevue-e-tailwind` |
+| Atividade 4: Arquitetura de Rotas e Segurança com PrimeVue | `atv-4/vue-router`          |
 
 ## 💻 Sobre o Projeto
 
@@ -23,7 +23,7 @@ A Residência em TIC 12 é um programa de capacitação profissional e tecnológ
 
 ## ⚙️ Configuração do Projeto
 
-1. Clone o repositório ou a Brach que desejar:
+1. Clone o repositório ou a Branch que desejar:
 
 ```sh
 git clone https://github.com/josuelustosa/TICHUB-iRede-Frontend.git
@@ -48,19 +48,30 @@ npm run dev
 http://localhost:5173
 ```
 
-### Comandos úteis
+## ⚠️ Observações da Atividade (4)
 
-- Gerar build de produção:
+Todos os critérios e desafios para a entrega foram atendidos conforme o escopo do sistema. Segue algumas observações importantes para acesso e teste da aplicação, alternado entre os layouts Consumidor e Admin.
 
-```sh
-npm run build
-```
+### Layouts Diferenciados
 
-- Visualizar build localmente:
+Para acessar esses layouts (Consumidor e Admin) na aplicação, encontre o arquivo `src/services/fakeAuth.ts` e altere apenas a seguinte linha:
 
 ```sh
-npm run preview
+let currentUser: User | null = users.admin
 ```
+
+- `users.admin` -> Administrador
+  - Possui acesso completo ao sistema (CONSUMER ou ADMIN).
+- `users.consumer` -> Consumidor
+  - Possui acesso exclusivo à página Checkout, mas não tem acesso a área ADMIN.
+- `null` -> Visitante
+  - Usuário NÃO autenticado que não tem acesso à página Checkout e nem a área ADMIN.
+
+### Rotas dos Layouts
+
+- "/" -> Acessa o layout ConsumerLayout (Catálogo)
+- "/admin" -> Acessa o layout AdminLayout (Dashboard)
 
 ## 📃 Certificado de Conclusão
+
 Status do Programa: Em andamento.
