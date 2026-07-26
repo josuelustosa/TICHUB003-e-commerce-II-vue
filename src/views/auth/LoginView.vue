@@ -1,33 +1,66 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
+import useVuelidate from '@vuelidate/core'
+import { email as emailValidator, helpers, required } from '@vuelidate/validators'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+import { useToast } from 'primevue/usetoast'
 
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast()
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
+const form = reactive({
+  email: '',
+  password: '',
+})
+
+const rules = {
+  email: {
+    required: helpers.withMessage('E-mail é obrigatório.', required),
+    email: helpers.withMessage('E-mail inválido.', emailValidator),
+  },
+  password: {
+    required: helpers.withMessage('Senha é obrigatória.', required),
+  },
+}
+
+const v$ = useVuelidate(rules, form)
 
 async function submitLogin() {
-  errorMessage.value = ''
+  const isValid = await v$.value.$validate()
+
+  if (!isValid) {
+    return
+  }
 
   try {
     await authStore.login({
-      email: email.value,
-      password: password.value,
+      email: form.email,
+      password: form.password,
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Login realizado!',
+      life: 3000,
     })
 
     await router.push({ name: 'home' })
   } catch (error) {
-    errorMessage.value = (error as Error).message
+    toast.add({
+      severity: 'error',
+      summary: 'Erro ao entrar',
+      detail: (error as Error).message,
+      life: 3000,
+    })
   }
 }
 </script>
@@ -52,12 +85,16 @@ async function submitLogin() {
               </label>
               <InputText
                 id="login-email"
-                v-model="email"
+                v-model="form.email"
                 type="email"
                 autocomplete="email"
                 placeholder="seu@email.com"
                 class="w-full"
+                :invalid="v$.email.$error"
               />
+              <small v-for="error in v$.email.$errors" :key="error.$uid" class="text-red-600">
+                {{ error.$message }}
+              </small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -69,25 +106,26 @@ async function submitLogin() {
               </label>
               <Password
                 inputId="login-password"
-                v-model="password"
+                v-model="form.password"
                 :feedback="false"
                 toggleMask
                 autocomplete="current-password"
                 placeholder="Digite sua senha"
                 inputClass="w-full"
                 class="w-full"
+                :invalid="v$.password.$error"
               />
+              <small v-for="error in v$.password.$errors" :key="error.$uid" class="text-red-600">
+                {{ error.$message }}
+              </small>
             </div>
-
-            <p v-if="errorMessage" class="text-sm text-red-600" role="alert">
-              {{ errorMessage }}
-            </p>
 
             <Button
               type="submit"
               label="Entrar"
               icon="pi pi-sign-in"
               class="w-full"
+              :loading="authStore.isLoading"
               :disabled="authStore.isLoading"
             />
           </form>

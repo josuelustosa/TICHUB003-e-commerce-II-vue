@@ -1,36 +1,85 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
+import useVuelidate from '@vuelidate/core'
+import {
+  email as emailValidator,
+  helpers,
+  minLength,
+  required,
+  sameAs,
+} from '@vuelidate/validators'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
+import { useToast } from 'primevue/usetoast'
 
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast()
 
-const name = ref('')
-const email = ref('')
-const password = ref('')
-const passwordConfirmation = ref('')
-const errorMessage = ref('')
+const form = reactive({
+  name: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+})
+
+const passwordForComparison = computed(() => form.password)
+
+const rules = {
+  name: {
+    required: helpers.withMessage('Nome é obrigatório.', required),
+  },
+  email: {
+    required: helpers.withMessage('E-mail é obrigatório.', required),
+    email: helpers.withMessage('E-mail inválido.', emailValidator),
+  },
+  password: {
+    required: helpers.withMessage('Senha é obrigatória.', required),
+    minLength: helpers.withMessage('A senha deve ter no mínimo 6 caracteres.', minLength(6)),
+  },
+  passwordConfirmation: {
+    required: helpers.withMessage('Confirme sua senha.', required),
+    sameAs: helpers.withMessage('As senhas não coincidem.', sameAs(passwordForComparison)),
+  },
+}
+
+const v$ = useVuelidate(rules, form)
 
 async function submitRegister() {
-  errorMessage.value = ''
+  const isValid = await v$.value.$validate()
+
+  if (!isValid) {
+    return
+  }
 
   try {
     await authStore.register({
-      name: name.value,
-      email: email.value,
-      password: password.value,
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    })
+
+    toast.add({
+      severity: 'success',
+      summary: 'Sucesso',
+      detail: 'Conta criada com sucesso!',
+      life: 3000,
     })
 
     await router.push({ name: 'home' })
   } catch (error) {
-    errorMessage.value = (error as Error).message
+    toast.add({
+      severity: 'error',
+      summary: 'Erro ao criar conta',
+      detail: (error as Error).message,
+      life: 3000,
+    })
   }
 }
 </script>
@@ -55,11 +104,15 @@ async function submitRegister() {
               </label>
               <InputText
                 id="register-name"
-                v-model="name"
+                v-model="form.name"
                 autocomplete="name"
                 placeholder="Seu nome"
                 class="w-full"
+                :invalid="v$.name.$error"
               />
+              <small v-for="error in v$.name.$errors" :key="error.$uid" class="text-red-600">
+                {{ error.$message }}
+              </small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -71,12 +124,16 @@ async function submitRegister() {
               </label>
               <InputText
                 id="register-email"
-                v-model="email"
+                v-model="form.email"
                 type="email"
                 autocomplete="email"
                 placeholder="seu@email.com"
                 class="w-full"
+                :invalid="v$.email.$error"
               />
+              <small v-for="error in v$.email.$errors" :key="error.$uid" class="text-red-600">
+                {{ error.$message }}
+              </small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -88,13 +145,17 @@ async function submitRegister() {
               </label>
               <Password
                 inputId="register-password"
-                v-model="password"
+                v-model="form.password"
                 toggleMask
                 autocomplete="new-password"
                 placeholder="Digite sua senha"
                 inputClass="w-full"
                 class="w-full"
+                :invalid="v$.password.$error"
               />
+              <small v-for="error in v$.password.$errors" :key="error.$uid" class="text-red-600">
+                {{ error.$message }}
+              </small>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -106,25 +167,30 @@ async function submitRegister() {
               </label>
               <Password
                 inputId="register-password-confirmation"
-                v-model="passwordConfirmation"
+                v-model="form.passwordConfirmation"
                 :feedback="false"
                 toggleMask
                 autocomplete="new-password"
                 placeholder="Repita sua senha"
                 inputClass="w-full"
                 class="w-full"
+                :invalid="v$.passwordConfirmation.$error"
               />
+              <small
+                v-for="error in v$.passwordConfirmation.$errors"
+                :key="error.$uid"
+                class="text-red-600"
+              >
+                {{ error.$message }}
+              </small>
             </div>
-
-            <p v-if="errorMessage" class="text-sm text-red-600" role="alert">
-              {{ errorMessage }}
-            </p>
 
             <Button
               type="submit"
               label="Criar conta"
               icon="pi pi-user-plus"
               class="w-full"
+              :loading="authStore.isLoading"
               :disabled="authStore.isLoading"
             />
           </form>
