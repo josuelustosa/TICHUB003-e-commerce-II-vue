@@ -1,16 +1,20 @@
 import type { Router } from 'vue-router'
 
-import { fakeAuth } from '@/services/fakeAuth'
+import type { UserRole } from '@/models/user.model'
+import { useAuthStore } from '@/stores/auth'
 
 export function registerGuards(router: Router) {
   router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore()
+    const roles = Array.isArray(to.meta.roles) ? to.meta.roles : []
+
     try {
       if (to.meta.requiresAuth) {
-        fakeAuth.requireAuthentication()
+        authStore.requireAuthentication()
       }
 
-      if (to.meta.roles?.length) {
-        fakeAuth.requireRole(to.meta.roles[0])
+      if (roles.length && typeof roles[0] === 'string') {
+        authStore.requireRole(roles[0] as UserRole)
       }
 
       next()
