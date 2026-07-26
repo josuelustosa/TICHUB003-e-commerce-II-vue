@@ -14,6 +14,14 @@ import DataView from 'primevue/dataview'
 import ConfirmDialog from 'primevue/confirmdialog'
 import ConfirmationService from 'primevue/confirmationservice'
 import ToggleSwitch from 'primevue/toggleswitch'
+import Menubar from 'primevue/menubar'
+import Avatar from 'primevue/avatar'
+import Badge from 'primevue/badge'
+import OverlayBadge from 'primevue/overlaybadge'
+import Menu from 'primevue/menu';
+import Toast from 'primevue/toast'
+import ToastService from 'primevue/toastservice'
+import Breadcrumb from 'primevue/breadcrumb';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -51,6 +59,7 @@ app.use(PrimeVue, {
     },
   },
 })
+app.use(ToastService)
 
 app.component('pButton', Button)
 app.component('pCard', Card)
@@ -58,5 +67,12 @@ app.component('pDataView', DataView)
 app.component('pConfirmDialog', ConfirmDialog)
 app.use(ConfirmationService)
 app.component('pToggleSwitch', ToggleSwitch)
+app.component('pMenubar', Menubar)
+app.component('pAvatar', Avatar)
+app.component('pBadge', Badge)
+app.component('pOverlayBadge', OverlayBadge)
+app.component('pMenu', Menu)
+app.component('pToast', Toast)
+app.component('pBreadcrumb', Breadcrumb)
 
 app.mount('#app')
