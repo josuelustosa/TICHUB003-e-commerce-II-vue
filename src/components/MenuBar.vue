@@ -1,12 +1,17 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { ref } from 'vue'
 
 import pMenubar from 'primevue/menubar'
 import pToggleSwitch from 'primevue/toggleswitch'
 import pAvatar from 'primevue/avatar'
 import pBadge from 'primevue/badge'
+import pButton from 'primevue/button'
+import pTieredMenu from 'primevue/tieredmenu'
+import { useRouter } from 'vue-router'
 
 import { cart } from '@/data/cart'
+import { useAuthStore } from '@/stores/auth'
 
 import logo from '@/assets/logo-ecommerce.png'
 
@@ -16,8 +21,31 @@ export default defineComponent({
     pToggleSwitch,
     pAvatar,
     pBadge,
+    pButton,
+    pTieredMenu,
   },
 
+  setup() {
+    const router = useRouter()
+    const authStore = useAuthStore()
+    const menu = ref()
+
+    async function logout() {
+      await authStore.logout()
+      await router.push({ name: 'login' })
+    }
+
+    function toggle(event: Event) {
+      menu.value.toggle(event)
+    }
+
+    return {
+      authStore,
+      logout,
+      menu,
+      toggle,
+    }
+  },
   data() {
     return {
       logo,
@@ -34,6 +62,30 @@ export default defineComponent({
   computed: {
     totalItems(): number {
       return this.cart.getTotalItems()
+    },
+
+    itemsTiredMenu() {
+      return [
+        {
+          label: 'Editar Perfil',
+          icon: 'pi pi-user-edit',
+          command: () => this.$router.push('/'),
+        },
+        {
+          label: 'Área Admin',
+          icon: 'pi pi-external-link',
+          command: () => this.$router.push('/admin'),
+        },
+        {
+          separator: true,
+        },
+        {
+          label: 'Sair',
+          icon: 'pi pi-sign-out',
+          disabled: this.authStore.isLoading,
+          command: () => this.logout(),
+        },
+      ]
     },
   },
 
@@ -111,17 +163,24 @@ export default defineComponent({
         </template>
       </pToggleSwitch>
 
-      <pAvatar icon="pi pi-user" shape="circle" />
+      <div class="flex justify-center">
+        <pButton
+          type="button"
+          text
+          rounded
+          aria-label="Abrir menu do usuário"
+          aria-haspopup="true"
+          aria-controls="overlay_tmenu"
+          @click="toggle"
+        >
+          <pAvatar icon="pi pi-user" shape="circle" />
+          <!-- <span class="hidden sm:inline text-sm font-medium text-neutral-700 dark:text-neutral-200">
+            {{ authStore.user?.name }}
+          </span> -->
+        </pButton>
+
+        <pTieredMenu ref="menu" id="overlay_tmenu" :model="itemsTiredMenu" popup />
+      </div>
     </template>
   </pMenubar>
 </template>
-
-<style scoped>
-:deep(.p-menubar-item-content) {
-  background: transparent !important;
-}
-
-:deep(.p-menubar-item-content:hover) {
-  background: transparent !important;
-}
-</style>

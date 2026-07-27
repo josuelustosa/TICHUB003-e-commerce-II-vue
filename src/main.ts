@@ -22,6 +22,7 @@ import Menu from 'primevue/menu';
 import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
 import Breadcrumb from 'primevue/breadcrumb';
+import TieredMenu from 'primevue/tieredmenu';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -74,5 +75,6 @@ app.component('pOverlayBadge', OverlayBadge)
 app.component('pMenu', Menu)
 app.component('pToast', Toast)
 app.component('pBreadcrumb', Breadcrumb)
+app.component('pTieredMenu', TieredMenu)
 
 app.mount('#app')

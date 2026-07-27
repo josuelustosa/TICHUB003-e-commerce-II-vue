@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import useVuelidate from '@vuelidate/core'
 import { email as emailValidator, helpers, required } from '@vuelidate/validators'
@@ -13,6 +13,7 @@ import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const toast = useToast()
 
@@ -32,6 +33,16 @@ const rules = {
 }
 
 const v$ = useVuelidate(rules, form)
+
+function getPostAuthRoute() {
+  const redirect = route.query.redirect
+
+  if (typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')) {
+    return redirect
+  }
+
+  return { name: 'home' as const }
+}
 
 async function submitLogin() {
   const isValid = await v$.value.$validate()
@@ -53,7 +64,7 @@ async function submitLogin() {
       life: 3000,
     })
 
-    await router.push({ name: 'home' })
+    await router.push(getPostAuthRoute())
   } catch (error) {
     toast.add({
       severity: 'error',

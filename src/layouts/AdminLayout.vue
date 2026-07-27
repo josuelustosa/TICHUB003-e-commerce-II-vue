@@ -5,9 +5,12 @@ import pMenu from 'primevue/menu'
 import pBadge from 'primevue/badge'
 import pAvatar from 'primevue/avatar'
 import pBreadcrumb from 'primevue/breadcrumb'
+import pButton from 'primevue/button'
+import { useRouter } from 'vue-router'
 
 import logo from '@/assets/favicon-ecommerce.png'
 import profile from '@/assets/profile.png'
+import { useAuthStore } from '@/stores/auth'
 
 export default defineComponent({
   components: {
@@ -15,7 +18,24 @@ export default defineComponent({
     pBadge,
     pAvatar,
     pBreadcrumb,
+    pButton,
   },
+
+  setup() {
+    const router = useRouter()
+    const authStore = useAuthStore()
+
+    async function logout() {
+      await authStore.logout()
+      await router.push({ name: 'login' })
+    }
+
+    return {
+      authStore,
+      logout,
+    }
+  },
+
   data() {
     return {
       logo,
@@ -113,15 +133,28 @@ export default defineComponent({
         </template>
         <template #end>
           <button
+            type="button"
             v-ripple
+            @click="logout"
             class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200"
           >
             <pAvatar :image="profile" class="mr-2" shape="circle" />
             <span class="inline-flex flex-col items-start">
-              <span class="font-bold">Vini Jr</span>
-              <span class="text-sm">Admin</span>
+              <span class="font-bold">{{ authStore.user?.name ?? 'Administrador' }}</span>
+              <span class="text-sm">{{ authStore.user?.role ?? 'ADMIN' }}</span>
             </span>
           </button>
+          <pButton
+            label="Sair"
+            icon="pi pi-sign-out"
+            severity="secondary"
+            text
+            class="w-full justify-start"
+            :loading="authStore.isLoading"
+            :disabled="authStore.isLoading"
+            aria-label="Sair da conta"
+            @click="logout"
+          />
         </template>
       </pMenu>
     </aside>

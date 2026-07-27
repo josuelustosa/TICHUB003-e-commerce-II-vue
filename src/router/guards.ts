@@ -25,7 +25,12 @@ export function registerGuards(router: Router) {
         }),
       )
 
-      next('/')
+      next({
+        name: 'login',
+        query: {
+          redirect: to.fullPath,
+        },
+      })
     }
   })
 }
