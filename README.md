@@ -15,6 +15,7 @@ A Residência em TIC 12 é um programa de capacitação profissional e tecnológ
 | Atividade 2: VueJS - E-commerce com Vue.js & Options API   | `atv-2/vue-js`              |
 | Atividade 3: PrimeVue e Tailwind CSS                       | `atv-3/primevue-e-tailwind` |
 | Atividade 4: Arquitetura de Rotas e Segurança com PrimeVue | `atv-4/vue-router`          |
+| Atividade 5: Autenticação Segura com Pinia e Vuelidate     | `atv-5/vuelidate-e-pinia-store` |
 
 ## 💻 Sobre o Projeto
 
@@ -48,29 +49,39 @@ npm run dev
 http://localhost:5173
 ```
 
-## ⚠️ Observações da Atividade (4)
+## ⚠️ Observações da Atividade (5)
 
-Todos os critérios e desafios para a entrega foram atendidos conforme o escopo do sistema. Segue algumas observações importantes para acesso e teste da aplicação, alternado entre os layouts Consumidor e Admin.
+### Acesso dos usuários
 
-### Layouts Diferenciados
+Os usuários simulados estão definidos no array `users` de [`src/stores/auth.ts`](src/stores/auth.ts):
 
-Para acessar esses layouts (Consumidor e Admin) na aplicação, encontre o arquivo `src/services/fakeAuth.ts` e altere apenas a seguinte linha:
+| Usuário | E-mail | Senha | Role |
+|---|---|---|---|
+| Administrador | `josue.admin@email.com` | `123456` | `ADMIN` |
+| Consumidor | `virginio007@email.com` | `123456` | `CONSUMER` |
 
-```sh
-let currentUser: User | null = users.admin
-```
+- A aplicação inicia sem usuário autenticado.
+- Novos registros são criados com role `CONSUMER`.
+- O login está disponível em `/login`.
+- O registro está disponível em `/register`.
+- O logout limpa a sessão e redireciona para `/login`.
 
-- `users.admin` -> Administrador
-  - Possui acesso completo ao sistema (CONSUMER ou ADMIN).
-- `users.consumer` -> Consumidor
-  - Possui acesso exclusivo à página Checkout, mas não tem acesso a área ADMIN.
-- `null` -> Visitante
-  - Usuário NÃO autenticado que não tem acesso à página Checkout e nem a área ADMIN.
+### Proteção de rotas
 
-### Rotas dos Layouts
+- `/checkout` exige autenticação.
+- `/admin` e suas rotas filhas exigem autenticação e role `ADMIN`.
+- A rota protegida de origem é preservada em `?redirect=` após redirecionamento para Login.
+- Usuários sem permissão recebem feedback pelo `Toast` do PrimeVue.
 
-- "/" -> Acessa o layout ConsumerLayout (Catálogo)
-- "/admin" -> Acessa o layout AdminLayout (Dashboard)
+### Rotas principais
+
+- `/` → layout Consumer e catálogo.
+- `/product/:id` → detalhes do produto.
+- `/cart` → carrinho.
+- `/checkout` → checkout protegido.
+- `/admin` → layout Admin e dashboard protegido.
+
+Para as informações completas da atividade, acesse [`docs/CONTEXT_IA_ATV_05.md`](docs/CONTEXT_IA_ATV_05.md).
 
 ## 📃 Certificado de Conclusão
 
